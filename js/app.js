@@ -238,7 +238,11 @@ const app = {
     this.showEditor();
     const q = (sel) => main.querySelector(sel);
     const k = instKey(i.inst);
-    const byFid = i.fid && ((k && q(`[data-fid="${CSS.escape(i.fid)}"][data-inst="${k}"]`)) || q(`[data-fid="${CSS.escape(i.fid)}"]`));
+    // se la regola si risolve compilando campi precisi (es. durata del lotto), vado direttamente su quelli, nello stesso lotto
+    const ruleF = RULE_FIDS.filter(([re]) => re.test(i.id)).flatMap(([, f]) => f);
+    const scope = (k && i.nodeId && q(`[data-node="${CSS.escape(i.nodeId)}"][data-inst="${k}"]`)) || main;
+    const inScope = (f) => scope.querySelector(`.field[data-fid="${CSS.escape(f)}"]`);
+    const byFid = ruleF.map(inScope).find(Boolean) || (i.fid && ((k && q(`.field[data-fid="${CSS.escape(i.fid)}"][data-inst="${k}"]`)) || q(`.field[data-fid="${CSS.escape(i.fid)}"]`)));
     let tgt = byFid;
     if (!tgt && i.fid) {
       // il campo non esiste ancora perché manca il gruppo (es. «Luogo di esecuzione»): lo creo e vado lì
@@ -259,7 +263,8 @@ const app = {
     if (tgt) {
       const target = tgt;
       let p = target.parentElement; while (p) { if (p.tagName === "DETAILS") p.open = true; p = p.parentElement; }
-      target.scrollIntoView({ block: "center" });
+      target.style.scrollMarginTop = "110px";
+      target.scrollIntoView({ block: target.getBoundingClientRect().height > innerHeight * 0.6 ? "start" : "center" });
       target.classList.add("pulse");
       target.querySelector("input,select,textarea")?.focus({ preventScroll: true });
     }
