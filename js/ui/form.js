@@ -248,7 +248,7 @@ export class Form {
       let el;
       if (list.length <= SMALL_LIST || short) {
         el = h("select", { id, disabled, "aria-label": label }, h("option", { value: "" }, label ? `${label}…` : short ? "—" : "— scegli —"),
-          ...list.map((e) => h("option", { value: e[0], selected: e[0] === value }, short ? e[0] : `${e[1]}${e[1] === e[0] ? "" : ` (${e[0]})`}${cl === "procurement-procedure-type" && PROC_ART[e[0]] ? ` — ${PROC_ART[e[0]]} D.Lgs. 36/2023` : ""}`)));
+          ...list.map((e) => h("option", { value: e[0], selected: e[0] === value }, short && cl === "currency" ? e[0] : short ? e[1] : `${e[1]}${e[1] === e[0] ? "" : ` (${e[0]})`}${cl === "procurement-procedure-type" && PROC_ART[e[0]] ? ` — ${PROC_ART[e[0]]} D.Lgs. 36/2023` : ""}`)));
         if (value && !list.some((e) => e[0] === value)) el.append(h("option", { value, selected: true }, value));
         el.addEventListener("change", () => onPick(el.value || undefined));
       } else el = combo(list, value, onPick, { id, disabled });
