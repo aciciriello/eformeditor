@@ -82,7 +82,7 @@ export class Form {
   renderGroup(g, ctx, asSection = false) {
     const { notice } = this;
     if (g.nd && g.r) {
-      const holder = h("div", {});
+      const holder = h("div", { "data-group": g.nd });
       const paint = () => {
         clear(holder);
         let list = notice.instances(g.nd, ctx);
@@ -101,7 +101,7 @@ export class Form {
             } }, "Elimina")));
           holder.append(h("div", { class: "inst", "data-node": g.nd, "data-inst": instKey(inst) }, head, ...this.renderItems(g.c, sub)));
         });
-        holder.append(h("button", { type: "button", onclick: () => { notice.addInstance(g.nd, ctx); paint(); this.app.changed(); } }, `+ Aggiungi ${g.n.toLowerCase()}`));
+        holder.append(h("button", { type: "button", class: "add", onclick: () => { notice.addInstance(g.nd, ctx); paint(); this.app.changed(); } }, `+ Aggiungi ${g.n.toLowerCase()}`));
       };
       paint();
       if (asSection) return holder;

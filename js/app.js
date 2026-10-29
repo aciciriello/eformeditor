@@ -17,6 +17,11 @@ const main = document.getElementById("main");
 const actions = document.getElementById("actions");
 const DRAFT = "eformeditor:draft:";
 
+const RULE_FIDS = [
+  [/^BR-BT-00727-0228/, ["BT-5141-Procedure", "BT-5071-Procedure"]],
+  [/^BR-BT-00727-0230/, ["BT-5141-Lot", "BT-5071-Lot"]],
+  [/^BR-BT-00137/, ["BT-36-Lot", "BT-36-Lot-Unit", "BT-536-Lot", "BT-537-Lot"]],
+];
 const app = {
   store: null, notice: null, help: null, section: 0, errors: new Map(), lastResult: null,
   env: { fx, parse: (xml) => new DOMParser().parseFromString(xml, "application/xml") },
@@ -192,6 +197,8 @@ const app = {
     this.errors = new Map(); this.errFids = new Set(); this.errNodes = new Set();
     for (const e of errs) {
       if (e.fid) this.errFids.add(e.fid);
+      // alcune regole si risolvono compilando campi diversi da quello segnalato: li mostro anche se facoltativi
+      for (const [re, fids] of RULE_FIDS) if (re.test(e.id)) fids.forEach((f) => this.errFids.add(f));
       if (e.nodeId) this.errNodes.add(e.nodeId);
       if (!e.fid) continue;
       const k = `${e.fid}|${instKey(e.inst)}`;
@@ -217,9 +224,26 @@ const app = {
     this.showEditor();
     const q = (sel) => main.querySelector(sel);
     const k = instKey(i.inst);
-    const target = (i.fid && ((k && q(`[data-fid="${CSS.escape(i.fid)}"][data-inst="${k}"]`)) || q(`[data-fid="${CSS.escape(i.fid)}"]`)))
-      || (i.nodeId && ((k && q(`[data-node="${CSS.escape(i.nodeId)}"][data-inst="${k}"]`)) || q(`[data-node="${CSS.escape(i.nodeId)}"]`)));
-    if (target) {
+    const byFid = i.fid && ((k && q(`[data-fid="${CSS.escape(i.fid)}"][data-inst="${k}"]`)) || q(`[data-fid="${CSS.escape(i.fid)}"]`));
+    let tgt = byFid;
+    if (!tgt && i.fid) {
+      // il campo non esiste ancora perché manca il gruppo (es. «Luogo di esecuzione»): lo creo e vado lì
+      let pn = this.store.fields[i.fid]?.pn;
+      const inLot = k && q(`[data-node][data-inst="${k}"]`);
+      let holders = [];
+      // il gruppo ripetibile può essere un nodo antenato di quello del campo: risalgo finché lo trovo
+      while (pn && !holders.length) { holders = [...main.querySelectorAll(`[data-group="${CSS.escape(pn)}"]`)]; pn = this.store.nodes?.[pn]?.[0]; }
+      const holder = (inLot && holders.find((hd) => inLot.contains(hd))) || holders[0];
+      const add = holder && [...holder.children].filter((c) => c.classList?.contains("add")).pop();
+      if (add && !holder.querySelector(".inst")) {
+        add.click();
+        const first = RULE_FIDS.filter(([re]) => re.test(i.id)).flatMap(([, f]) => f).map((f) => q(`[data-fid="${CSS.escape(f)}"]`)).find(Boolean);
+        tgt = first || q(`[data-fid="${CSS.escape(i.fid)}"]`) || holder.querySelector(".inst") || holder;
+      } else if (holder) tgt = holder.querySelector(".inst") || holder;
+    }
+    if (!tgt && i.nodeId) tgt = (k && q(`[data-node="${CSS.escape(i.nodeId)}"][data-inst="${k}"]`)) || q(`[data-node="${CSS.escape(i.nodeId)}"]`);
+    if (tgt) {
+      const target = tgt;
       let p = target.parentElement; while (p) { if (p.tagName === "DETAILS") p.open = true; p = p.parentElement; }
       target.scrollIntoView({ block: "center" });
       target.classList.add("pulse");

@@ -1,6 +1,11 @@
 import { h, clear } from "./dom.js";
 import { clean } from "../core/format.js";
 
+const HINTS = [
+  [/^BR-BT-00727/, "Aggiungi «Luogo di esecuzione» e indica almeno il Paese (es. Italia) e la suddivisione NUTS (es. ITF48 per la provincia BAT)."],
+  [/^BR-BT-00137/, "Nel lotto indica la durata del contratto (es. 12 mesi) oppure la data di inizio e la data di fine."],
+];
+const hintFor = (i) => HINTS.find(([re]) => re.test(i.id))?.[1];
 const SEV = { E: "Errore", W: "Avviso", I: "Informazione", F: "Segnalazione" };
 
 export function renderCheck(app, mount) {
@@ -34,7 +39,7 @@ export function renderCheck(app, mount) {
         const loc = app.locate(i);
         const where = loc ? h("span", { class: "where" }, loc.label) : h("span", { class: "where" }, "—");
         const b = h("button", { type: "button", class: `issue ${i.role}`, disabled: !loc, onclick: () => app.goTo(i) }, where,
-          h("span", {}, clean(i.msg), h("code", {}, `${SEV[i.role] || i.role} · ${i.id}`)));
+          h("span", {}, clean(i.msg), hintFor(i) ? h("span", { class: "todo" }, "Cosa fare: " + hintFor(i)) : null, h("code", {}, `${SEV[i.role] || i.role} · ${i.id}`)));
         return h("li", {}, b);
       }));
       return h("details", { class: "tech", open }, h("summary", {}, `${title} (${arr.length})`), ul);
