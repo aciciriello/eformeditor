@@ -122,6 +122,8 @@ export function generateXmlWithMap(notice, { pretty = true } = {}) {
     if (f.t === "date") return formatDate(s);
     if (f.t === "time") return formatTime(s, dateOf(inst, f));
     if (f.t === "indicator") return s === "true" || s === "1" ? "true" : s === "false" || s === "0" ? "false" : s;
+    // gli importi vanno sempre con due decimali e il punto (le piattaforme rifiutano «227460» con l'errore «formato importo non valido»)
+    if (f.t === "amount" && /^-?\d+([.,]\d+)?$/.test(s.trim())) { const n = s.trim().replace(",", "."); return /\.\d{3,}$/.test(n) ? n : Number(n).toFixed(2); }
     return s.trim();
   };
 
