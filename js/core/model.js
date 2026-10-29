@@ -224,13 +224,14 @@ export class Notice {
 
   // ------------------------------------------------------------ serializzazione bozza
   toJSON() {
-    return { sdk: this.store.meta.sdk, notice: this.id, root: this.root, counters: this.counters, defaults: this.defaults };
+    return { sdk: this.store.meta.sdk, notice: this.id, root: this.root, counters: this.counters, defaults: this.defaults, compat13: !!this.compat13 };
   }
 
   loadJSON(obj) {
     this.root = obj.root;
     this.counters = obj.counters || {};
     this.defaults = obj.defaults !== false;
+    this.compat13 = !!obj.compat13;
     this.syncCounters();
   }
 }

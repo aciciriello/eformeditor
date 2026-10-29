@@ -4,7 +4,7 @@ import { Notice } from "./core/model.js";
 import { generateXml } from "./core/xmlgen.js";
 import { importXml } from "./core/xmlimport.js";
 import { isEmpty, clean } from "./core/format.js";
-import { RULE_FIDS, hintFor, shortHintFor, requiredFor } from "./core/regole.js";
+import { RULE_FIDS, hintFor, shortHintFor, requiredFor, toSdk113, FA_CODES, NOTA_MAXPART } from "./core/regole.js";
 import { h, clear } from "./ui/dom.js";
 import { Form, instKey } from "./ui/form.js";
 import { renderPicker } from "./ui/picker.js";
@@ -94,6 +94,12 @@ const app = {
     this.index(); this.saveDraft(); this.scheduleLive();
     return co.v["OPT-200-Organization-Company"];
   },
+  /** Il campo e' obbligatorio nel contesto attuale (regola fissa del tipo di avviso o condizione della piattaforma 1.13)? */
+  reqOn(fid, ctx) {
+    if (this.required.has(fid)) return true;
+    return !!(this.notice?.compat13 && fid === "BT-113-Lot" && FA_CODES.includes(this.notice.getValue("BT-765-Lot", ctx)));
+  },
+  reqNote(fid) { return this.required.get(fid) || (fid === "BT-113-Lot" ? NOTA_MAXPART : null); },
   async leave() {
     if (!this.notice) return this.showPicker();
     if (await confirmBox("Tornare alla scelta dell'avviso? La bozza resta salvata su questo computer.", "Torna alla scelta")) { this.saveDraft(); this.showPicker(); }
@@ -359,7 +365,8 @@ const app = {
   // ------------------------------------------------------------ file
   downloadXml() {
     this.notice.stampDispatch();
-    const xml = generateXml(this.notice);
+    let xml = generateXml(this.notice);
+    if (this.notice.compat13) xml = toSdk113(xml);
     const d = new Date(), p = (x) => String(x).padStart(2, "0");
     save(new Blob([xml], { type: "application/xml" }), `eforms-${this.notice.id}-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}.xml`);
     this.saveDraft();

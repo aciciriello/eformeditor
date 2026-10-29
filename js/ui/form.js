@@ -48,10 +48,10 @@ export class Form {
   }
   fieldVisible(it, ctx) {
     if (it.h) return false;
-    return this.app.showAll || it.m === 1 || this.app.required.has(it.f) || this.app.errFids.has(it.f) || !isEmpty(this.valueOf(it.f, ctx));
+    return this.app.showAll || it.m === 1 || this.app.reqOn(it.f, ctx) || this.app.errFids.has(it.f) || !isEmpty(this.valueOf(it.f, ctx));
   }
   groupVisible(g, ctx) {
-    return this.app.showAll || this.hasMandatory(g) || this.errTouch(g) || this.hasData(g.c, ctx);
+    return this.app.showAll || this.hasMandatory(g) || this.errTouch(g) || this.hasData(g.c, ctx) || this.hasReq(g.c, ctx);
   }
 
   renderItems(items, ctx) {
@@ -69,6 +69,10 @@ export class Form {
   // ------------------------------------------------------------------ gruppi
   hasMandatory(g) {
     return g.c.some((x) => (x.f ? (x.m === 1 && !x.h) || (this.app.required.has(x.f) && !x.h) : this.hasMandatory(x)));
+  }
+  /** Campi resi obbligatori da una condizione (es. accordo quadro per piattaforme eForms 1.13). */
+  hasReq(items, ctx) {
+    return items.some((it) => (it.f ? !it.h && this.app.reqOn(it.f, ctx) : this.hasReq(it.c, ctx)));
   }
   hasData(items, ctx) {
     for (const it of items) {
@@ -115,7 +119,7 @@ export class Form {
     }
     const kids = this.renderItems(g.c, ctx);
     if (!kids.length) return [];
-    const open = this.hasMandatory(g) || this.hasData(g.c, ctx);
+    const open = this.hasMandatory(g) || this.hasData(g.c, ctx) || this.hasReq(g.c, ctx);
     const d = h("details", { class: "grp", "data-node": g.nd || "" }, h("summary", {}, g.n), ...kids);
     if (open) d.open = true;
     return d;
@@ -138,11 +142,11 @@ export class Form {
     const ro = !!item.ro || (inst && inst.a.includes(fid));
     const wrap = h("div", { class: "field", "data-fid": fid, "data-inst": instKey(inst) });
     const label = h("label", { for: id }, f.n,
-      item.m === 1 || (this.app.required.has(fid) && !/^BT-(536|537|36-Lot-Unit)/.test(fid)) ? h("span", { class: "req", title: "Obbligatorio" }, "*") : item.m === 2 ? h("span", { class: "cond" }, "(obbligatorio in certi casi)") : null);
+      item.m === 1 || (this.app.reqOn(fid, ctx) && !/^BT-(536|537|36-Lot-Unit)/.test(fid)) ? h("span", { class: "req", title: "Obbligatorio" }, "*") : item.m === 2 ? h("span", { class: "cond" }, "(obbligatorio in certi casi)") : null);
     const hp = this.app.help && this.app.help[fid];
     const lblRow = h("div", { class: "lbl-row" }, label);
     wrap.append(lblRow);
-    if (this.app.required.has(fid) && /^(BT-5071|BT-36-Lot$)/.test(fid)) wrap.append(h("p", { class: "reqnote" }, this.app.required.get(fid)));
+    if (this.app.reqOn(fid, ctx) && /^(BT-5071|BT-36-Lot$|BT-27-(Procedure|Lot)$|BT-113-Lot$)/.test(fid)) wrap.append(h("p", { class: "reqnote" }, this.app.reqNote(fid)));
     if (hp) {
       const open = item.m === 1;
       const box = h("p", { class: "help", hidden: !open }, hp);

@@ -75,6 +75,8 @@ export async function importXml(store, xml, env) {
   fillNode("ND-Root", doc.documentElement, notice.root);
   for (const m of notice.metaItems) if (notice.root.v[m.f] !== undefined) notice.root.a.push(m.f);
   notice.syncCounters();
+  // se il file dichiara eForms 1.13 (es. scheletro generato dalla PAD) l'XML scaricato resta compatibile con quella versione
+  notice.compat13 = /eforms-sdk-1\.13\b/.test(stringsOf("/*/cbc:CustomizationID/text()", doc).join(""));
   notice.importStats = stats;
   return notice;
 }
