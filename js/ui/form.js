@@ -1,3 +1,4 @@
+import { TAR } from "../core/tar.js";
 import { PROC_ART } from "../core/codice.js";
 import { clean } from "../core/format.js";
 import { hintFor } from "../core/regole.js";
@@ -277,8 +278,20 @@ export class Form {
     sel.addEventListener("focus", fill);
     sel.addEventListener("change", () => set(sel.value || undefined));
     const be = (f.rf || []).find((b) => this.app.secOfEntity[b] !== undefined);
-    if (be === undefined) return sel;
-    return h("div", { class: "row" }, sel, h("button", { type: "button", class: "ghost small", onclick: () => this.app.goToEntity(be) }, "Vai all'elenco →"));
+    const row = be === undefined ? sel : h("div", { class: "row" }, sel, h("button", { type: "button", class: "ghost small", onclick: () => this.app.goToEntity(be) }, "Vai all'elenco →"));
+    // organo di ricorso: si sceglie il TAR da un elenco e l'organizzazione viene creata da sola
+    if (!/ReviewTerms$/.test(f.pn || "") || ro) return row;
+    const tar = h("select", { class: "tarpick", "aria-label": "Aggiungi un TAR" }, h("option", { value: "" }, "+ Aggiungi qui il TAR competente…"),
+      ...TAR.map((t, i) => h("option", { value: String(i) }, t.n)));
+    const msg = h("p", { class: "hint", hidden: true });
+    tar.addEventListener("change", () => {
+      if (tar.value === "") return;
+      const id = this.app.addTar(TAR[+tar.value]);
+      tar.value = ""; fill(); sel.value = id; set(id);
+      msg.hidden = false;
+      msg.textContent = `Ho aggiunto ${id} all'elenco delle organizzazioni. Controlla e completa i suoi dati (via, codice fiscale, e-mail) nella sezione «Organizzazioni».`;
+    });
+    return h("div", {}, row, tar, msg);
   }
 
   multilingual(f, fid, id, get, set, ro) {

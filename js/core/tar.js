@@ -1,0 +1,25 @@
+// Tribunali amministrativi regionali: nome ufficiale e sede. Indirizzo, codice fiscale ed e-mail restano da completare
+// (per il TAR Puglia – Bari i dati sono quelli già usati in un avviso reale).
+export const TAR = [
+  { n: "T.A.R. Abruzzo – sede di L'Aquila", c: "L'AQUILA" },
+  { n: "T.A.R. Basilicata", c: "POTENZA" },
+  { n: "T.A.R. Calabria – sede di Catanzaro", c: "CATANZARO" },
+  { n: "T.A.R. Campania – sede di Napoli", c: "NAPOLI" },
+  { n: "T.A.R. Emilia-Romagna – sede di Bologna", c: "BOLOGNA" },
+  { n: "T.A.R. Friuli-Venezia Giulia", c: "TRIESTE" },
+  { n: "T.A.R. Lazio – sede di Roma", c: "ROMA" },
+  { n: "T.A.R. Liguria", c: "GENOVA" },
+  { n: "T.A.R. Lombardia – sede di Milano", c: "MILANO" },
+  { n: "T.A.R. Marche", c: "ANCONA" },
+  { n: "T.A.R. Molise", c: "CAMPOBASSO" },
+  { n: "T.A.R. Piemonte", c: "TORINO" },
+  { n: "T.A.R. Puglia – sede di Bari", c: "BARI", z: "70122", nuts: "ITF47", cf: "93012720723" },
+  { n: "T.A.R. Puglia – sede di Lecce", c: "LECCE" },
+  { n: "T.A.R. Sardegna", c: "CAGLIARI" },
+  { n: "T.A.R. Sicilia – sede di Palermo", c: "PALERMO" },
+  { n: "T.A.R. Toscana", c: "FIRENZE" },
+  { n: "T.A.R. Trentino-Alto Adige – sede di Trento", c: "TRENTO" },
+  { n: "T.A.R. Umbria", c: "PERUGIA" },
+  { n: "T.A.R. Valle d'Aosta", c: "AOSTA" },
+  { n: "T.A.R. Veneto", c: "VENEZIA" },
+];

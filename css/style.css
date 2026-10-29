@@ -209,3 +209,5 @@ body.working{padding-bottom:calc(var(--fstrip) + 3px + 68px)}
 .field .msg{font-weight:600}
 
 .reqnote{margin:.2rem 0 .4rem;font-size:.85rem;font-weight:600;color:var(--err)}
+.tarpick{margin-top:.5rem;max-width:100%}
+p.hint{margin:.4rem 0 0;font-size:.9rem;color:#1b5e20;font-weight:600}

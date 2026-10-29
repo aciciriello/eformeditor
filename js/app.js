@@ -81,6 +81,17 @@ const app = {
     fill("ND-Organization", n.addInstance("ND-Organization"), prof);
     return true;
   },
+  /** Crea nell'elenco delle organizzazioni il TAR scelto e ne restituisce l'identificativo (ORG-xxxx). */
+  addTar(t) {
+    const n = this.notice, org = n.addInstance("ND-Organization");
+    const co = org.c["ND-Company"][0], lang = n.languages[0] || "ITA";
+    co.v["BT-500-Organization-Company"] = { [lang]: t.n };
+    const sub = (parent, nd, v) => { const i = n.makeInst(nd); Object.assign(i.v, v); (parent.c[nd] ||= []).push(i); return i; };
+    sub(co, "ND-CompanyAddress", { "BT-513-Organization-Company": t.c, "BT-514-Organization-Company": "ITA", ...(t.z ? { "BT-512-Organization-Company": t.z } : {}), ...(t.nuts ? { "BT-507-Organization-Company": t.nuts } : {}) });
+    if (t.cf) sub(co, "ND-CompanyLegalEntity", { "BT-501-Organization-Company": t.cf });
+    this.index(); this.saveDraft(); this.scheduleLive();
+    return co.v["OPT-200-Organization-Company"];
+  },
   async leave() {
     if (!this.notice) return this.showPicker();
     if (await confirmBox("Tornare alla scelta dell'avviso? La bozza resta salvata su questo computer.", "Torna alla scelta")) { this.saveDraft(); this.showPicker(); }
