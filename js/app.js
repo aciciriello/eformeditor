@@ -4,6 +4,7 @@ import { Notice } from "./core/model.js";
 import { generateXml } from "./core/xmlgen.js";
 import { importXml } from "./core/xmlimport.js";
 import { isEmpty, clean } from "./core/format.js";
+import { RULE_FIDS, hintFor, shortHintFor } from "./core/regole.js";
 import { h, clear } from "./ui/dom.js";
 import { Form, instKey } from "./ui/form.js";
 import { renderPicker } from "./ui/picker.js";
@@ -17,11 +18,6 @@ const main = document.getElementById("main");
 const actions = document.getElementById("actions");
 const DRAFT = "eformeditor:draft:";
 
-const RULE_FIDS = [
-  [/^BR-BT-00727-0228/, ["BT-5141-Procedure", "BT-5071-Procedure"]],
-  [/^BR-BT-00727-0230/, ["BT-5141-Lot", "BT-5071-Lot"]],
-  [/^BR-BT-00137/, ["BT-36-Lot", "BT-36-Lot-Unit", "BT-536-Lot", "BT-537-Lot"]],
-];
 const app = {
   store: null, notice: null, help: null, section: 0, errors: new Map(), lastResult: null,
   env: { fx, parse: (xml) => new DOMParser().parseFromString(xml, "application/xml") },
@@ -115,7 +111,16 @@ const app = {
     this.refreshMarks(); this.refreshSide(); this.paintStatus();
   },
   /** Aggiorna i segni di errore sui campi visibili senza ridisegnare il modulo (non si perde il cursore). */
+  buildErrBox() {
+    const issues = this.sectionIssues();
+    if (!issues.length) return null;
+    return h("div", { class: "errbox", role: "alert" },
+      h("b", {}, `Da sistemare in questa pagina (${issues.length})`),
+      h("ul", {}, issues.map((i) => h("li", {}, h("button", { type: "button", onclick: () => this.goTo(i) }, hintFor(i) || clean(i.msg))))));
+  },
   refreshMarks() {
+    const old = main.querySelector(".errbox"), nb = this.buildErrBox();
+    if (old && nb) old.replaceWith(nb); else if (old) old.remove(); else if (nb) main.querySelector(".panel > h2")?.after(nb);
     main.querySelectorAll(".field[data-fid]").forEach((el) => {
       const fid = el.dataset.fid, k = el.dataset.inst;
       const msgs = this.errors.get(`${fid}|${k}`) || this.errors.get(`${fid}|`) || [];
@@ -198,12 +203,20 @@ const app = {
     for (const e of errs) {
       if (e.fid) this.errFids.add(e.fid);
       // alcune regole si risolvono compilando campi diversi da quello segnalato: li mostro anche se facoltativi
-      for (const [re, fids] of RULE_FIDS) if (re.test(e.id)) fids.forEach((f) => this.errFids.add(f));
+      for (const [re, fids] of RULE_FIDS) if (re.test(e.id)) fids.forEach((f) => {
+        this.errFids.add(f);
+        const k2 = `${f}|`, m = shortHintFor(e) || hintFor(e) || clean(e.msg);
+        if (!(this.errors.get(k2) || []).includes(m)) (this.errors.get(k2) || this.errors.set(k2, []).get(k2)).push(m);
+      });
       if (e.nodeId) this.errNodes.add(e.nodeId);
       if (!e.fid) continue;
       const k = `${e.fid}|${instKey(e.inst)}`;
       (this.errors.get(k) || this.errors.set(k, []).get(k)).push(clean(e.msg));
     }
+  },
+  sectionIssues() {
+    const r = this.lastResult;
+    return r ? r.issues.filter((i) => i.role === "E" && this.sectionOf(i) === this.section) : [];
   },
   errorsFor(fid, inst) {
     return this.errors.get(`${fid}|${instKey(inst)}`) || this.errors.get(`${fid}|`) || [];
@@ -344,9 +357,9 @@ const app = {
   importFile() {
     this.pickFile(".xml,.json,application/xml,application/json", async (text, f) => {
       if (f.name.toLowerCase().endsWith(".json")) {
-        const j = JSON.parse(text); const n = await Notice.create(this.store, j.notice); n.loadJSON(j); this.openNotice(n);
+        const j = JSON.parse(text); const n = await Notice.create(this.store, j.notice); n.loadJSON(j); this.openNotice(n); this.scheduleLive();
       } else {
-        const n = await importXml(this.store, text, this.env); this.openNotice(n);
+        const n = await importXml(this.store, text, this.env); this.openNotice(n); this.scheduleLive();
       }
     });
   },

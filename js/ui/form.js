@@ -1,4 +1,6 @@
 import { PROC_ART } from "../core/codice.js";
+import { clean } from "../core/format.js";
+import { hintFor } from "../core/regole.js";
 import { h, uid, clear } from "./dom.js";
 import { combo } from "./combo.js";
 import { isEmpty } from "../core/format.js";
@@ -29,6 +31,8 @@ export class Form {
     const wrap = group.nd && group.r ? this.renderGroup({ ...group, s: 0, n: group.n }, new Map(), true) : this.renderItems(group.c, new Map());
     box.append(...[].concat(wrap));
     const app = this.app;
+    const eb = app.buildErrBox();
+    if (eb) box.querySelector("h2").after(eb);
     const toggle = (all) => { app.showAll = all; app.showEditor(); };
     if (app.showAll) box.querySelector("h2").after(h("p", { class: "mode" }, "Stai vedendo tutti i campi. ", h("button", { type: "button", class: "ghost", onclick: () => toggle(false) }, "Mostra solo l'essenziale")));
     else if (this.hidden) box.querySelector("h2").after(h("p", { class: "mode" }, `Qui vedi solo ciò che serve: gli altri ${this.hidden} campi sono facoltativi e compaiono da soli se diventano necessari. `,
@@ -101,6 +105,7 @@ export class Form {
             } }, "Elimina")));
           holder.append(h("div", { class: "inst", "data-node": g.nd, "data-inst": instKey(inst) }, head, ...this.renderItems(g.c, sub)));
         });
+        if (!list.length && this.errTouch(g)) holder.append(h("p", { class: "msg", role: "alert" }, `Obbligatorio: aggiungi «${g.n}» e compila i campi richiesti.`));
         holder.append(h("button", { type: "button", class: "add", onclick: () => { notice.addInstance(g.nd, ctx); paint(); this.app.changed(); } }, `+ Aggiungi ${g.n.toLowerCase()}`));
       };
       paint();

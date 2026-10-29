@@ -202,3 +202,8 @@ body.working{padding-bottom:calc(var(--fstrip) + 3px + 68px)}
 .seo{max-width:60rem}.seo h1{font-size:1.8rem;margin:.2rem 0 .6rem}.seo p{color:var(--muted)}
 
 .issue .todo{display:block;margin-top:.3rem;color:var(--ink);font-weight:600}
+
+.errbox{margin:.6rem 0 1rem;padding:.8rem 1rem;border:1px solid var(--err);border-left-width:5px;border-radius:.5rem;background:var(--errbg)}
+.errbox ul{margin:.4rem 0 0;padding-left:1.1rem}.errbox li{margin:.3rem 0}
+.errbox button{background:none;border:0;padding:0;font:inherit;color:var(--ink);text-align:left;text-decoration:underline;cursor:pointer}
+.field .msg{font-weight:600}

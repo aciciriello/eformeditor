@@ -1,11 +1,7 @@
 import { h, clear } from "./dom.js";
 import { clean } from "../core/format.js";
+import { hintFor } from "../core/regole.js";
 
-const HINTS = [
-  [/^BR-BT-00727/, "Aggiungi «Luogo di esecuzione» e indica almeno il Paese (es. Italia) e la suddivisione NUTS (es. ITF48 per la provincia BAT)."],
-  [/^BR-BT-00137/, "Nel lotto indica la durata del contratto (es. 12 mesi) oppure la data di inizio e la data di fine."],
-];
-const hintFor = (i) => HINTS.find(([re]) => re.test(i.id))?.[1];
 const SEV = { E: "Errore", W: "Avviso", I: "Informazione", F: "Segnalazione" };
 
 export function renderCheck(app, mount) {
