@@ -351,7 +351,8 @@ document.getElementById("brand").addEventListener("click", (e) => { e.preventDef
     app.help = await store.help();
     document.getElementById("sdkv").textContent = store.meta.sdk;
     window.__app = app; // utile per prove e diagnosi
-    app.showPicker();
+    const want = new URLSearchParams(location.search).get("avviso");
+    if (want && store.meta.notices.some((n) => n.id === want)) { history.replaceState(null, "", location.pathname); await app.newNotice(want); } else app.showPicker();
   } catch (e) {
     clear(main); main.append(h("p", { class: "summary bad" }, "Impossibile caricare i dati: " + e.message));
   }
