@@ -86,7 +86,7 @@ export function renderPicker(app, mount) {
         row("Formato", `XML eForms secondo l'eForms SDK ${store.meta.sdk} (UBL 2.3), tutti e 51 i sottotipi di avviso.`),
         row("Controlli", "Verifica con le regole di validazione ufficiali (schema XSD e Schematron) dell'Ufficio delle pubblicazioni dell'Unione europea."),
         row("Riferimenti normativi", "D.Lgs. 36/2023; Regolamento di esecuzione (UE) 2019/1780 e successive modifiche."),
-        row("Riservatezza", ["I file sono letti ed elaborati nel tuo browser: i dati che inserisci non vengono inviati a nessun server. ", h("a", { href: "privacy.html" }, "Privacy e cookie")]))));
+        row("Riservatezza", ["I file sono letti ed elaborati nel tuo browser: i dati che inserisci non vengono inviati a nessun server. Le statistiche di visita (Google Analytics) sono attive solo se accetti i cookie. ", h("a", { href: "privacy.html" }, "Privacy e cookie")]))));
   };
   paint();
 }
