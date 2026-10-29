@@ -47,7 +47,7 @@ export class Form {
   }
   fieldVisible(it, ctx) {
     if (it.h) return false;
-    return this.app.showAll || it.m === 1 || this.app.errFids.has(it.f) || !isEmpty(this.valueOf(it.f, ctx));
+    return this.app.showAll || it.m === 1 || this.app.required.has(it.f) || this.app.errFids.has(it.f) || !isEmpty(this.valueOf(it.f, ctx));
   }
   groupVisible(g, ctx) {
     return this.app.showAll || this.hasMandatory(g) || this.errTouch(g) || this.hasData(g.c, ctx);
@@ -67,7 +67,7 @@ export class Form {
 
   // ------------------------------------------------------------------ gruppi
   hasMandatory(g) {
-    return g.c.some((x) => (x.f ? x.m === 1 && !x.h : this.hasMandatory(x)));
+    return g.c.some((x) => (x.f ? (x.m === 1 && !x.h) || (this.app.required.has(x.f) && !x.h) : this.hasMandatory(x)));
   }
   hasData(items, ctx) {
     for (const it of items) {
@@ -137,10 +137,11 @@ export class Form {
     const ro = !!item.ro || (inst && inst.a.includes(fid));
     const wrap = h("div", { class: "field", "data-fid": fid, "data-inst": instKey(inst) });
     const label = h("label", { for: id }, f.n,
-      item.m === 1 ? h("span", { class: "req", title: "Obbligatorio" }, "*") : item.m === 2 ? h("span", { class: "cond" }, "(obbligatorio in certi casi)") : null);
+      item.m === 1 || (this.app.required.has(fid) && !/^BT-(536|537|36-Lot-Unit)/.test(fid)) ? h("span", { class: "req", title: "Obbligatorio" }, "*") : item.m === 2 ? h("span", { class: "cond" }, "(obbligatorio in certi casi)") : null);
     const hp = this.app.help && this.app.help[fid];
     const lblRow = h("div", { class: "lbl-row" }, label);
     wrap.append(lblRow);
+    if (this.app.required.has(fid) && /^(BT-5071|BT-36-Lot$)/.test(fid)) wrap.append(h("p", { class: "reqnote" }, this.app.required.get(fid)));
     if (hp) {
       const open = item.m === 1;
       const box = h("p", { class: "help", hidden: !open }, hp);

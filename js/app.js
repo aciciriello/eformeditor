@@ -4,7 +4,7 @@ import { Notice } from "./core/model.js";
 import { generateXml } from "./core/xmlgen.js";
 import { importXml } from "./core/xmlimport.js";
 import { isEmpty, clean } from "./core/format.js";
-import { RULE_FIDS, hintFor, shortHintFor } from "./core/regole.js";
+import { RULE_FIDS, hintFor, shortHintFor, requiredFor } from "./core/regole.js";
 import { h, clear } from "./ui/dom.js";
 import { Form, instKey } from "./ui/form.js";
 import { renderPicker } from "./ui/picker.js";
@@ -21,7 +21,7 @@ const DRAFT = "eformeditor:draft:";
 const app = {
   store: null, notice: null, help: null, section: 0, errors: new Map(), lastResult: null,
   env: { fx, parse: (xml) => new DOMParser().parseFromString(xml, "application/xml") },
-  pick: null, showAll: false, errFids: new Set(), errNodes: new Set(), liveRun: 0, validating: false,
+  pick: null, showAll: false, errFids: new Set(), errNodes: new Set(), required: new Map(), liveRun: 0, validating: false,
 
   // ------------------------------------------------------------ bozze locali (mai obbligatorie)
   listDrafts() {
@@ -163,6 +163,7 @@ const app = {
     if (prefilled) notify("Ho precompilato i dati del tuo ente.");
   },
   openNotice(n) {
+    this.required = requiredFor(n.id, this.store.meta.notices.find((x) => x.id === n.id)?.type);
     // le organizzazioni vanno definite per prime: le altre sezioni le richiamano per identificativo
     const oi = n.tree.findIndex((g) => g.g === "GR-Organisations-Section");
     if (oi > 0) n.tree.unshift(...n.tree.splice(oi, 1));
