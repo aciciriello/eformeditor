@@ -1,40 +1,47 @@
 // Tribunali amministrativi regionali. Fonte: giustizia-amministrativa.it (elenco contatti: PEC e telefono di ogni sede;
 // indirizzi solo dove confermati da documenti ufficiali). Il resto va completato nella sezione Organizzazioni.
+// Codici fiscali: elenco pubblicato da servicematica.com (Bari confermato da un avviso reale; Venezia, Trento e Bolzano omessi perche' non attendibili).
 // Dati del TAR Puglia – Bari (codice fiscale, NUTS) tratti da un avviso reale.
 export const TAR = [
  {
   "n": "T.A.R. Abruzzo – sede di L'Aquila",
   "c": "L'AQUILA",
+  "cf": "93002040660",
   "pec": "taraq-segrprotocolloamm@ga-cert.it",
   "tel": "+39 08623477"
  },
  {
   "n": "T.A.R. Abruzzo – sede di Pescara",
   "c": "PESCARA",
+  "cf": "80007430681",
   "pec": "tarpe-segrprotocolloamm@ga-cert.it",
   "tel": "+39 085918661"
  },
  {
   "n": "T.A.R. Basilicata – sede di Potenza",
   "c": "POTENZA",
+  "cf": "96003350764",
   "pec": "tarpz-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0971414111"
  },
  {
   "n": "T.A.R. Calabria – sede di Catanzaro",
   "c": "CATANZARO",
+  "cf": "97003130792",
   "pec": "tarcz-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0961531401"
  },
  {
   "n": "T.A.R. Calabria – sede di Reggio Calabria",
   "c": "REGGIO CALABRIA",
+  "cf": "92090290807",
   "pec": "tarrc-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0965325111"
  },
  {
   "n": "T.A.R. Campania – sede di Napoli",
   "c": "NAPOLI",
+  "cf": "94028990631",
   "pec": "tarna-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0817817111",
   "v": "Piazza Municipio 64"
@@ -42,36 +49,42 @@ export const TAR = [
  {
   "n": "T.A.R. Campania – sede di Salerno",
   "c": "SALERNO",
+  "cf": "95091730655",
   "pec": "tarsa-segrprotocolloamm@ga-cert.it",
   "tel": "+39 089226496"
  },
  {
   "n": "T.A.R. Emilia-Romagna – sede di Bologna",
   "c": "BOLOGNA",
+  "cf": "92004480379",
   "pec": "tarbo-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0514293101"
  },
  {
   "n": "T.A.R. Emilia-Romagna – sede di Parma",
   "c": "PARMA",
+  "cf": "92157480341",
   "pec": "tarpr-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0521287177"
  },
  {
   "n": "T.A.R. Friuli-Venezia Giulia – sede di Trieste",
   "c": "TRIESTE",
+  "cf": "80029240324",
   "pec": "tarts-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0406724711"
  },
  {
   "n": "T.A.R. Lazio – sede di Latina",
   "c": "LATINA",
+  "cf": "91106680597",
   "pec": "tarlt-segrprotocolloamm@ga-cert.it",
   "tel": "+39 077340871"
  },
  {
   "n": "T.A.R. Lazio – sede di Roma",
   "c": "ROMA",
+  "cf": "80195990587",
   "pec": "tarrm-segrprotocolloamm@ga-cert.it",
   "tel": "+39 06328721",
   "v": "Via Flaminia 189",
@@ -80,18 +93,21 @@ export const TAR = [
  {
   "n": "T.A.R. Liguria – sede di Genova",
   "c": "GENOVA",
+  "cf": "95004670105",
   "pec": "targe-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0109897100"
  },
  {
   "n": "T.A.R. Lombardia – sede di Brescia",
   "c": "BRESCIA",
+  "cf": "98156760179",
   "pec": "tarbs-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0302279404"
  },
  {
   "n": "T.A.R. Lombardia – sede di Milano",
   "c": "MILANO",
+  "cf": "97024970150",
   "pec": "tarmi-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0276053211",
   "v": "Via Filippo Corridoni 39",
@@ -100,6 +116,7 @@ export const TAR = [
  {
   "n": "T.A.R. Marche – sede di Ancona",
   "c": "ANCONA",
+  "cf": "80005630423",
   "pec": "taran-segrprotocolloamm@ga-cert.it",
   "tel": "+39 071206946",
   "v": "Via della Loggia 24",
@@ -108,12 +125,14 @@ export const TAR = [
  {
   "n": "T.A.R. Molise – sede di Campobasso",
   "c": "CAMPOBASSO",
+  "cf": "92005650707",
   "pec": "tarcb-segrprotocolloamm@ga-cert.it",
   "tel": "+39 08744891"
  },
  {
   "n": "T.A.R. Piemonte – sede di Torino",
   "c": "TORINO",
+  "cf": "96574140016",
   "pec": "tarto-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0115576411"
  },
@@ -130,6 +149,7 @@ export const TAR = [
  {
   "n": "T.A.R. Puglia – sede di Lecce",
   "c": "LECCE",
+  "cf": "93061840752",
   "pec": "tarle-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0832276511",
   "v": "Via Rubichi 23/a"
@@ -137,12 +157,14 @@ export const TAR = [
  {
   "n": "T.A.R. Sardegna – sede di Cagliari",
   "c": "CAGLIARI",
+  "cf": "80004710929",
   "pec": "tarca-segrprotocolloamm@ga-cert.it",
   "tel": "+39 070679751"
  },
  {
   "n": "T.A.R. Sicilia – sede di Catania",
   "c": "CATANIA",
+  "cf": "93159470876",
   "pec": "tarct-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0957530411",
   "v": "Via Istituto Sacro Cuore 22"
@@ -150,12 +172,14 @@ export const TAR = [
  {
   "n": "T.A.R. Sicilia – sede di Palermo",
   "c": "PALERMO",
+  "cf": "97013610825",
   "pec": "tarpa-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0917431111"
  },
  {
   "n": "T.A.R. Toscana – sede di Firenze",
   "c": "FIRENZE",
+  "cf": "80045610484",
   "pec": "tarfi-segrprotocolloamm@ga-cert.it",
   "tel": "+39 055267301"
  },
@@ -174,12 +198,14 @@ export const TAR = [
  {
   "n": "T.A.R. Umbria – sede di Perugia",
   "c": "PERUGIA",
+  "cf": "80004400547",
   "pec": "tarpg-segrprotocolloamm@ga-cert.it",
   "tel": "+39 0755755301"
  },
  {
   "n": "T.A.R. Valle d'Aosta – sede di Aosta",
   "c": "AOSTA",
+  "cf": "80004970077",
   "pec": "tarao-segrprotocolloamm@ga-cert.it",
   "tel": "+39 016531356"
  },
