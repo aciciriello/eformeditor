@@ -289,7 +289,7 @@ export class Form {
       const id = this.app.addTar(TAR[+tar.value]);
       tar.value = ""; fill(); sel.value = id; set(id);
       msg.hidden = false;
-      msg.textContent = `Ho aggiunto ${id} all'elenco delle organizzazioni. Controlla e completa i suoi dati (via, codice fiscale, e-mail) nella sezione «Organizzazioni».`;
+      msg.textContent = `Ho aggiunto ${id} all'elenco delle organizzazioni. Ho inserito PEC e telefono ufficiali. Controlla e completa gli altri dati (via, CAP, codice fiscale) nella sezione «Organizzazioni».`;
     });
     return h("div", {}, row, tar, msg);
   }

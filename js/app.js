@@ -88,6 +88,8 @@ const app = {
     co.v["BT-500-Organization-Company"] = { [lang]: t.n };
     const sub = (parent, nd, v) => { const i = n.makeInst(nd); Object.assign(i.v, v); (parent.c[nd] ||= []).push(i); return i; };
     sub(co, "ND-CompanyAddress", { "BT-513-Organization-Company": t.c, "BT-514-Organization-Company": "ITA", ...(t.z ? { "BT-512-Organization-Company": t.z } : {}), ...(t.nuts ? { "BT-507-Organization-Company": t.nuts } : {}) });
+    if (t.v) co.c["ND-CompanyAddress"][0].v["BT-510(a)-Organization-Company"] = t.v;
+    sub(co, "ND-CompanyContact", { "BT-506-Organization-Company": t.pec, "BT-503-Organization-Company": t.tel });
     if (t.cf) sub(co, "ND-CompanyLegalEntity", { "BT-501-Organization-Company": t.cf });
     this.index(); this.saveDraft(); this.scheduleLive();
     return co.v["OPT-200-Organization-Company"];
