@@ -199,3 +199,4 @@ body.working{padding-bottom:calc(var(--fstrip) + 3px + 68px)}
 #cookiebar p{margin:0;flex:1 1 320px;font-size:14px;line-height:1.45}
 #cookiebar .ck-btns{display:flex;gap:10px}
 #cookiebar .btn{padding:9px 18px;cursor:pointer;border-radius:8px;font:inherit;font-weight:600}
+.seo{max-width:60rem}.seo h1{font-size:1.8rem;margin:.2rem 0 .6rem}.seo p{color:var(--muted)}
