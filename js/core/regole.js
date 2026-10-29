@@ -20,6 +20,8 @@ const LUOGO_LOTTO = [...LUOGO_PROC.filter((t) => t !== "pin-buyer" && t !== "pin
 const DURATA_SUB = ["7", "8", "9", "10", "11", "15", "16", "17", "18", "19", "22"];
 const NOTA_LUOGO = "Obbligatorio: indica dove si svolge il contratto (Paese e suddivisione NUTS, es. Italia, ITF48 per la provincia BAT).";
 const NOTA_IMPORTO = "Obbligatorio per la tua piattaforma: indica il valore stimato dell'appalto al netto dell'IVA (importo maggiore di zero).";
+const NOTA_INDIRIZZO = "Obbligatorio per le organizzazioni italiane (NUTS e CAP).";
+const NOTA_ACCEL = "Obbligatorio: indica se la procedura è accelerata (sì/no).";
 const NOTA_DURATA = "Obbligatorio: indica la durata del contratto (es. 24 mesi), oppure la data di inizio e di fine.";
 
 /** Mappa fid → nota «Obbligatorio» per il tipo di avviso aperto. */
@@ -30,8 +32,18 @@ export function requiredFor(subtype, noticeType) {
   if (DURATA_SUB.includes(String(subtype))) ["BT-36-Lot", "BT-36-Lot-Unit", "BT-536-Lot", "BT-537-Lot"].forEach((f) => m.set(f, NOTA_DURATA));
   // le piattaforme (PAD) rifiutano il bando senza importo stimato maggiore di zero (errori REG98/REG99)
   if (["cn-standard", "cn-social", "cn-desg"].includes(noticeType)) ["BT-27-Procedure", "BT-27-Lot"].forEach((f) => m.set(f, NOTA_IMPORTO));
+  // indirizzo dell'organizzazione: per l'Italia servono sempre NUTS e CAP (regole BT-507 / BT-512)
+  ["BT-507-Organization-Company", "BT-512-Organization-Company"].forEach((f) => m.set(f, NOTA_INDIRIZZO));
+  // bandi: accelerata sì/no (scoperto con la scansione automatica dei sottotipi)
+  if (["cn-standard", "cn-social"].includes(noticeType)) m.set("BT-106-Procedure", NOTA_ACCEL);
   return m;
 }
+
+/** Condizioni sul valore di altri campi, scoperte con la scansione dei sottotipi: [fid, funzione(get) → obbligatorio?]. */
+export const REQ_COND = {
+  "BT-15-Lot": (get) => get("BT-14-Lot") !== "restricted-document",
+  "BT-18-Lot": (get) => get("BT-17-Lot") !== "not-allowed" && !!get("BT-17-Lot"),
+};
 
 /** Compatibilita' con le piattaforme che validano con eForms 1.13 (es. molte PAD): il numero massimo di partecipanti e' obbligatorio per gli accordi quadro. */
 export const FA_CODES = ["fa-w-rc", "fa-mix", "fa-wo-rc"];

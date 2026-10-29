@@ -4,7 +4,7 @@ import { Notice } from "./core/model.js";
 import { generateXml } from "./core/xmlgen.js";
 import { importXml } from "./core/xmlimport.js";
 import { isEmpty, clean } from "./core/format.js";
-import { RULE_FIDS, hintFor, shortHintFor, requiredFor, toSdk113, FA_CODES, NOTA_MAXPART } from "./core/regole.js";
+import { RULE_FIDS, hintFor, shortHintFor, requiredFor, REQ_COND, toSdk113, FA_CODES, NOTA_MAXPART } from "./core/regole.js";
 import { h, clear } from "./ui/dom.js";
 import { Form, instKey } from "./ui/form.js";
 import { renderPicker } from "./ui/picker.js";
@@ -97,6 +97,7 @@ const app = {
   /** Il campo e' obbligatorio nel contesto attuale (regola fissa del tipo di avviso o condizione della piattaforma 1.13)? */
   reqOn(fid, ctx) {
     if (this.required.has(fid)) return true;
+    if (REQ_COND[fid] && this.notice && REQ_COND[fid]((f) => this.notice.getValue(f, ctx))) return true;
     return !!(this.notice?.compat13 && fid === "BT-113-Lot" && FA_CODES.includes(this.notice.getValue("BT-765-Lot", ctx)));
   },
   reqNote(fid) { return this.required.get(fid) || (fid === "BT-113-Lot" ? NOTA_MAXPART : null); },
