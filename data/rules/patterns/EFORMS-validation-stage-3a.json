@@ -1,0 +1,1 @@
+{"r":[{"c":"//*[not(child::*) and normalize-space(text()) = '']","a":[["element-not-empty","E","false()","","I campi devono essere compilati"]]}]}
